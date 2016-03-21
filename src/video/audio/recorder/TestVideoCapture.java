@@ -94,17 +94,6 @@ public class TestVideoCapture {
 		Image image = ImageIO.read(new File("/home/dmitriy/Projects/Java/video.audio.capture/video.audio.recorder/image_0.png"));
 		ImageSource imageSource = new ImageSource();
 		
-		JPanel drawPanel = new JPanel(){
-
-			@Override
-			public void paintComponent(Graphics g) {
-				
-				super.paintComponent(g);
-				g.drawImage(imageSource.getImage(), 0, 0, null);
-			}
-			
-		};
-		
 		frame.add(imageSource);
 		frame.setSize(image.getWidth(null), image.getHeight(null));
 		frame.setVisible(true);
