@@ -19,6 +19,8 @@ import javax.swing.WindowConstants;
 
 import org.hamcrest.core.Is;
 import org.hamcrest.core.IsEqual;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.github.sarxos.webcam.Webcam;
@@ -28,24 +30,44 @@ import com.github.sarxos.webcam.WebcamResolution;
 
 public class TestVideoCapture {
 
+	ImageCollector imageCollector = new ImageCollector();
+	ImageSourceWebcam imageSource = new ImageSourceWebcam(imageCollector);
 	
+	@Before
+	public void startCamera(){
+		imageSource.open();
+	}
+	
+	@After
+	public void stopCamera(){
+		imageSource.close();
+	}
 	
 	@Test
 	public void videoCapture() throws Exception {
 
-		
-		ImageCollector imageCollector = new ImageCollector();
-		ImageSourceWebcam imageSource = new ImageSourceWebcam(imageCollector);
 		imageSource.collectImage();
-		
+				
 		assertThat(imageCollector.videoFile.exists(), Is.is(true));
 		assertThat(imageCollector.videoFile.length()>1,Is.is(true));
 	}
 	
 	@Test
+	public void videoCaptureTwice() throws Exception {
+
+			imageSource.collectImage();
+			assertThat(imageCollector.videoFile.exists(), Is.is(true));
+			assertThat(imageCollector.videoFile.length()>1,Is.is(true));
+			
+			imageSource.collectImage();	
+			assertThat(imageCollector.videoFile.exists(), Is.is(true));
+			assertThat(imageCollector.videoFile.length()>1,Is.is(true));
+	}
+	
+	@Test
 	public void sizeConfigurations() throws Exception {
 		assertThat(WebcamResolution.VGA.getSize(),IsEqual.equalTo(new Dimension(640,480)));
-		assertThat(Webcam.getDefault().getViewSize(), IsEqual.equalTo(new Dimension(176,144)));
+		assertThat(Webcam.getDefault().getViewSize(), IsEqual.equalTo(new Dimension(640,480)));
 	}
 	
 	@Test

@@ -8,13 +8,14 @@ import javax.imageio.ImageIO;
 
 public class ImageCollector {
 
-	private int fCount = 1;
-	File videoFile = new File("./image_" + fCount++ + ".png");
-	public File imageFile = videoFile;
+	private int fCount = 0;
+	File videoFile;
+	
 
 	public void setImage(BufferedImage image) {
 		try {
-			ImageIO.write(image, "PNG", imageFile);
+			videoFile = new File("./image_" + fCount++ + ".png");
+			ImageIO.write(image, "PNG", videoFile);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

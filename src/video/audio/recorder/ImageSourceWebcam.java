@@ -8,17 +8,16 @@ import com.github.sarxos.webcam.WebcamEvent;
 import com.github.sarxos.webcam.WebcamListener;
 import com.github.sarxos.webcam.WebcamResolution;
 
+import javafx.scene.control.TreeTableRow;
+
 public class ImageSourceWebcam {
 
 	private ImageCollector imageCollector;
 
+	Webcam webcam = Webcam.getDefault();
+	
 	public ImageSourceWebcam(ImageCollector imageCollector) {
 		this.imageCollector = imageCollector;
-		// TODO Auto-generated constructor stub
-	}
-
-	public void collectImage() throws Exception {
-		Webcam webcam = Webcam.getDefault();
 		webcam.setViewSize(WebcamResolution.VGA.getSize());
 		WebcamListener camListener = new WebcamListener() {
 			
@@ -47,15 +46,22 @@ public class ImageSourceWebcam {
 			}
 		};
 		webcam.addWebcamListener(camListener );
+	}
+
+	public void open(){
 		webcam.open();
+	}
+	
+	public void close(){
+		webcam.close();
+	}
+	
+	public void collectImage() throws Exception {		
+		
 		TimeUnit.SECONDS.sleep(1);
 		BufferedImage image = webcam.getImage();
 		System.out.println(image.toString() + "webcamImageObtained");
-		imageCollector.setImage(image);
-		
-		
-		webcam.close();
-		
+		imageCollector.setImage(image);		
 	}
 
 }
