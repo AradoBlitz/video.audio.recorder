@@ -28,12 +28,14 @@ import com.github.sarxos.webcam.WebcamResolution;
 
 public class TestVideoCapture {
 
-	private int fCount = 1;
+	
 	
 	@Test
 	public void videoCapture() throws Exception {
 
-		File videoFile = new File("./image_" + fCount++ + ".png");
+		
+		ImageCollector imageCollector = new ImageCollector();
+
 		Webcam webcam = Webcam.getDefault();
 		webcam.setViewSize(WebcamResolution.VGA.getSize());
 		WebcamListener camListener = new WebcamListener() {
@@ -67,16 +69,12 @@ public class TestVideoCapture {
 		TimeUnit.SECONDS.sleep(1);
 		BufferedImage image = webcam.getImage();
 		System.out.println(image.toString() + "webcamImageObtained");
-		try {
-			ImageIO.write(image, "PNG", videoFile);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		imageCollector.setImage(image);
+		
 		
 		webcam.close();
-		assertThat(videoFile.exists(), Is.is(true));
-		assertThat(videoFile.length()>1,Is.is(true));
+		assertThat(imageCollector.videoFile.exists(), Is.is(true));
+		assertThat(imageCollector.videoFile.length()>1,Is.is(true));
 	}
 	
 	@Test
