@@ -35,44 +35,9 @@ public class TestVideoCapture {
 
 		
 		ImageCollector imageCollector = new ImageCollector();
-
-		Webcam webcam = Webcam.getDefault();
-		webcam.setViewSize(WebcamResolution.VGA.getSize());
-		WebcamListener camListener = new WebcamListener() {
-			
-			@Override
-			public void webcamOpen(WebcamEvent arg0) {
-				// TODO Auto-generated method stub
-				System.out.println(arg0.toString() + "webcamOpen");
-			}
-			
-			@Override
-			public void webcamImageObtained(WebcamEvent arg0) {
-				
-				
-			}
-			
-			@Override
-			public void webcamDisposed(WebcamEvent arg0) {
-				// TODO Auto-generated method stub
-				System.out.println(arg0.toString() + "webcamDisposed");
-			}
-			
-			@Override
-			public void webcamClosed(WebcamEvent arg0) {
-				// TODO Auto-generated method stub
-				System.out.println(arg0.toString()  + "wbcamClosed");
-			}
-		};
-		webcam.addWebcamListener(camListener );
-		webcam.open();
-		TimeUnit.SECONDS.sleep(1);
-		BufferedImage image = webcam.getImage();
-		System.out.println(image.toString() + "webcamImageObtained");
-		imageCollector.setImage(image);
+		ImageSourceWebcam imageSource = new ImageSourceWebcam(imageCollector);
+		imageSource.collectImage();
 		
-		
-		webcam.close();
 		assertThat(imageCollector.videoFile.exists(), Is.is(true));
 		assertThat(imageCollector.videoFile.length()>1,Is.is(true));
 	}
