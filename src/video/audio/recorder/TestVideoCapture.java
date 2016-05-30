@@ -31,7 +31,9 @@ import com.github.sarxos.webcam.WebcamResolution;
 public class TestVideoCapture {
 
 	ImageCollector imageCollector = new ImageCollector();
-	ImageSourceWebcam imageSource = new ImageSourceWebcam(imageCollector);
+	ImageSource screen = new ImageSource();
+	ImageSourceWebcam imageSource = new ImageSourceWebcam(imageCollector,screen);
+	AudioRecorder audioRecorder = new AudioRecorder();
 	
 	@Before
 	public void startCamera(){
@@ -53,13 +55,31 @@ public class TestVideoCapture {
 	}
 	
 	@Test
+	public void audio() throws Exception {
+		
+		
+		
+		boolean nextBytes = true;
+		while (nextBytes) {
+			imageSource.collectImage();
+			nextBytes = audioRecorder.capture();			
+			
+		}
+		
+	}
+	
+	@Test
 	public void videoCaptureTwice() throws Exception {
 
-			imageSource.collectImage();
+		TimeUnit.SECONDS.sleep(1);
+		for(int x=0;x<50;x++)	
+		imageSource.collectImage();
+			//audioRecorder.capture();
 			assertThat(imageCollector.videoFile.exists(), Is.is(true));
 			assertThat(imageCollector.videoFile.length()>1,Is.is(true));
 			
-			imageSource.collectImage();	
+			//imageSource.collectImage();
+		//	audioRecorder.capture();
 			assertThat(imageCollector.videoFile.exists(), Is.is(true));
 			assertThat(imageCollector.videoFile.length()>1,Is.is(true));
 	}
@@ -72,20 +92,13 @@ public class TestVideoCapture {
 	
 	@Test
 	public void drawToPanel() throws Exception {
-		JFrame frame = new JFrame();
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		
-
+		
 		Image image = ImageIO.read(new File("/home/dmitriy/Projects/Java/video.audio.capture/video.audio.recorder/image_0.png"));
-		ImageSource imageSource = new ImageSource();
-		
-		frame.add(imageSource);
-		frame.setSize(image.getWidth(null), image.getHeight(null));
-		frame.setVisible(true);
-		
-		imageSource.setImage(image);
+		System.out.println(image.getWidth(null) + " " + image.getHeight(null));
+		screen.setImage(image);
 		Thread.currentThread().sleep(1000);
-		imageSource.setImage(ImageIO.read(new File("/home/dmitriy/Projects/Java/video.audio.capture/video.audio.recorder/image_1.png")));
+		screen.setImage(ImageIO.read(new File("/home/dmitriy/Projects/Java/video.audio.capture/video.audio.recorder/image_1.png")));
 		
 	}
 	
