@@ -30,6 +30,7 @@ import com.github.sarxos.webcam.WebcamResolution;
 
 public class TestVideoCapture {
 
+	public static final List<BufferedImage> IMAGE_LIST = new ArrayList<>();
 	ImageCollector imageCollector = new ImageCollector();
 	ImageSource screen = new ImageSource();
 	ImageSourceWebcam imageSource = new ImageSourceWebcam(imageCollector,screen);
@@ -71,13 +72,15 @@ public class TestVideoCapture {
 		
 		
 		boolean nextBytes = true;
-		while (nextBytes) {
+		int index = 0;
+		while (index < 20 && nextBytes) {
 			imageSource.collectImage();
 			for(int i = 0;i<10;i++)
 				nextBytes = audioRecorder.capture();			
-			
+			index++;
 		}
 		
+		while(imageSource.play() && audioRecorder.play()){}
 	}
 	
 	@Test

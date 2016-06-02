@@ -1,5 +1,9 @@
 package video.audio.recorder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
@@ -16,6 +20,9 @@ public class AudioRecorder {
 	TargetDataLine targetLine;
 	SourceDataLine sourceLine;
 	byte[] targetData ;
+	int index =0;
+
+	private List<byte[]> soundList = new ArrayList<>();
 	
 	public AudioRecorder(){
 		try{
@@ -45,9 +52,16 @@ public class AudioRecorder {
 		//}
 		if (numBytesRead == -1)	return false;
 		//for(int x =0;x<10;x++)
-		sourceLine.write(targetData, 0, numBytesRead);
+		sourceLine.write(targetData, 0, numBytesRead);	
+		soundList.add(targetData);
 		return true;
 		
+	}
+	
+	public boolean play(){
+		sourceLine.write(soundList.get(index), 0, soundList.get(index).length);
+		index++;
+		return index<soundList.size();
 	}
 
 }

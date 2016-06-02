@@ -1,6 +1,9 @@
 package video.audio.recorder;
 
+import java.awt.Container;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.github.sarxos.webcam.Webcam;
@@ -16,6 +19,7 @@ public class ImageSourceWebcam {
 	private ImageSource screen;
 	
 	Webcam webcam = Webcam.getDefault();
+	private List<BufferedImage> imageList = new ArrayList<>();
 	
 	public ImageSourceWebcam(ImageCollector imageCollector,ImageSource screen) {
 		this.imageCollector = imageCollector;
@@ -64,6 +68,15 @@ public class ImageSourceWebcam {
 		System.out.println(image.toString() + "webcamImageObtained");
 		imageCollector.setImage(image);
 		screen.setImage(image);
+		imageList .add(image);
+	}
+	
+	int index=0;
+	
+	public boolean play(){
+		screen.setImage(imageList.get(index));
+		index++;
+		return index<imageList.size();
 	}
 
 }
