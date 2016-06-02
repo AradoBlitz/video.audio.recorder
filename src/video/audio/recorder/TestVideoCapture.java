@@ -55,7 +55,18 @@ public class TestVideoCapture {
 	}
 	
 	@Test
-	public void audio() throws Exception {
+	public void audio() throws Exception {		
+		
+		boolean nextBytes = true;
+		while (nextBytes) {
+			nextBytes = audioRecorder.capture();			
+			
+		}
+		
+	}
+	
+	@Test
+	public void audioVideo() throws Exception {
 		
 		
 		
