@@ -23,6 +23,8 @@ public class AudioRecorder {
 	int index =0;
 
 	private List<byte[]> soundList = new ArrayList<>();
+
+	private List<Integer> accountList = new ArrayList<>();
 	
 	public AudioRecorder(){
 		try{
@@ -52,14 +54,15 @@ public class AudioRecorder {
 		//}
 		if (numBytesRead == -1)	return false;
 		//for(int x =0;x<10;x++)
-		sourceLine.write(targetData, 0, numBytesRead);	
-		soundList.add(targetData);
+		sourceLine.write(targetData, 0, numBytesRead);
+		accountList .add(numBytesRead);
+		soundList.add(new String(targetData).getBytes());
 		return true;
 		
 	}
 	
 	public boolean play(){
-		sourceLine.write(soundList.get(index), 0, soundList.get(index).length);
+		sourceLine.write(soundList.get(index), 0, accountList.get(index));
 		index++;
 		return index<soundList.size();
 	}
