@@ -59,11 +59,16 @@ public class TestVideoCapture {
 	public void audio() throws Exception {		
 		
 		boolean nextBytes = true;
-		while (nextBytes) {
+		int index = 0;
+		while (index < 50 && nextBytes) {
 			nextBytes = audioRecorder.capture();			
-			
+			index++;
 		}
-		
+		System.out.println("Playing...");
+		TimeUnit.SECONDS.sleep(1);		
+		while(audioRecorder.play()){
+			TimeUnit.MICROSECONDS.sleep(1);
+		}
 	}
 	
 	@Test
