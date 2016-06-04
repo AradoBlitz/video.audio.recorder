@@ -99,7 +99,8 @@ public class TestVideoCapture {
 				nextBytes = audioRecorder.capture();			
 			index++;
 		}
-		
+		System.out.println("Playing...");
+		TimeUnit.SECONDS.sleep(3);	
 		while(imageSource.play() && audioRecorder.play()){
 			TimeUnit.MICROSECONDS.sleep(1);
 		}
