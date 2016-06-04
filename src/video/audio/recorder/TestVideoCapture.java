@@ -56,6 +56,21 @@ public class TestVideoCapture {
 	}
 	
 	@Test
+	public void video() throws Exception {
+		
+		int index = 0;
+		while (index < 50) {
+			imageSource.collectImage();			
+			index++;
+		}
+		System.out.println("Playing...");
+		TimeUnit.SECONDS.sleep(3);		
+		while(imageSource.play()){
+			TimeUnit.MICROSECONDS.sleep(100000);
+		}
+	}
+	
+	@Test
 	public void audio() throws Exception {		
 		
 		boolean nextBytes = true;
