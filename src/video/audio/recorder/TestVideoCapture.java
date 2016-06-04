@@ -65,7 +65,7 @@ public class TestVideoCapture {
 			index++;
 		}
 		System.out.println("Playing...");
-		TimeUnit.SECONDS.sleep(1);		
+		TimeUnit.SECONDS.sleep(3);		
 		while(audioRecorder.play()){
 			TimeUnit.MICROSECONDS.sleep(1);
 		}
