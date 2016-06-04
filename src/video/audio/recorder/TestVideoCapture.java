@@ -81,7 +81,7 @@ public class TestVideoCapture {
 		}
 		
 		while(imageSource.play() && audioRecorder.play()){
-			TimeUnit.SECONDS.sleep(1);
+			TimeUnit.MICROSECONDS.sleep(1);
 		}
 	}
 	
