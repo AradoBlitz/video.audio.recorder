@@ -73,14 +73,16 @@ public class TestVideoCapture {
 		
 		boolean nextBytes = true;
 		int index = 0;
-		while (index < 20 && nextBytes) {
+		while (index < 10 && nextBytes) {
 			imageSource.collectImage();
 			for(int i = 0;i<10;i++)
 				nextBytes = audioRecorder.capture();			
 			index++;
 		}
 		
-		while(imageSource.play() && audioRecorder.play()){}
+		while(imageSource.play() && audioRecorder.play()){
+			TimeUnit.SECONDS.sleep(1);
+		}
 	}
 	
 	@Test
