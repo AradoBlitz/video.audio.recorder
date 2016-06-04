@@ -56,7 +56,8 @@ public class AudioRecorder {
 		//for(int x =0;x<10;x++)
 		sourceLine.write(targetData, 0, numBytesRead);
 		accountList .add(numBytesRead);
-		soundList.add(new String(targetData).getBytes());
+		soundList.add(targetData);
+		targetData = new byte[targetLine.getBufferSize() / 5];
 		return true;
 		
 	}
