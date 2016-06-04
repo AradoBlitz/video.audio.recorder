@@ -87,9 +87,7 @@ public class TestVideoCapture {
 	}
 	
 	@Test
-	public void audioVideo() throws Exception {
-		
-		
+	public void audioVideo() throws Exception {		
 		
 		boolean nextBytes = true;
 		int index = 0;
@@ -101,7 +99,9 @@ public class TestVideoCapture {
 		}
 		System.out.println("Playing...");
 		TimeUnit.SECONDS.sleep(3);	
-		while(imageSource.play() && audioRecorder.play()){
+		while(imageSource.play()){
+			for(int i = 0;i<20;i++)
+				audioRecorder.play();
 			TimeUnit.MICROSECONDS.sleep(1);
 		}
 	}
