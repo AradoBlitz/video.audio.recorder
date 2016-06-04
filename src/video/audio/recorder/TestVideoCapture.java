@@ -75,7 +75,7 @@ public class TestVideoCapture {
 		int index = 0;
 		while (index < 10 && nextBytes) {
 			imageSource.collectImage();
-			for(int i = 0;i<10;i++)
+			for(int i = 0;i<20;i++)
 				nextBytes = audioRecorder.capture();			
 			index++;
 		}
