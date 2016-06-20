@@ -142,9 +142,14 @@ public class TestVideoCapture {
 				boolean nextBytes = true;
 				int index = 0;
 				while (index < 10 && nextBytes) {
-					
-					
-					nextBytes = audioRecorder.capture();			
+					try {
+						imageSource.storeImage();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					for(int i = 0;i<20;i++)
+						nextBytes = audioRecorder.capture();			
 					index++;
 				}
 			}
@@ -171,9 +176,10 @@ public class TestVideoCapture {
 			@Override
 			public void run() {
 				
-				while (audioRecorder.play()) {
-					
-						
+				while(imageSource.playNext()){
+					for(int i = 0;i<20;i++)
+						audioRecorder.play();
+					TimeUnit.MICROSECONDS.sleep(1);
 				}
 			}
 			
