@@ -3,6 +3,7 @@ package video.audio.recorder.concurrent;
 import java.awt.Container;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -20,6 +21,8 @@ public class ImageSourceWebcam {
 	
 	Webcam webcam = Webcam.getDefault();
 	private List<BufferedImage> imageList = new ArrayList<>();
+	private volatile List<BufferedImage> imageBuffer = new ArrayList<>();
+	private List<Integer>  imageCount = new ArrayList<>();
 	
 	public ImageSourceWebcam(ImageCollector imageCollector,ImageSource screen) {
 		this.imageCollector = imageCollector;
@@ -64,19 +67,44 @@ public class ImageSourceWebcam {
 	
 	public void collectImage() throws Exception {		
 		
-		BufferedImage image = webcam.getImage();
-		System.out.println(image.toString() + "webcamImageObtained");
-		imageCollector.setImage(image);
-		screen.setImage(image);
-		imageList .add(image);
+				BufferedImage image = webcam.getImage();
+				if(image !=null)
+				System.out.println(image.toString() + "webcamImageObtained");
+				screen.setImage(image);
+				imageList.add(image);
+			
 	}
 	
-	int index=0;
 	
-	public boolean play(){
-		screen.setImage(imageList.get(index));
-		index++;
-		return index<imageList.size();
+	volatile List<BufferedImage> playList = Collections.synchronizedList( new ArrayList<BufferedImage>());
+	public void play(){
+		
+		for(BufferedImage image : imageList){
+			screen.setImage(image);
+			try {
+				TimeUnit.SECONDS.sleep(1);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}					
+		
+	}
+	
+	public void storeImage() {
+		List<BufferedImage> hold = imageBuffer;
+		imageBuffer = new ArrayList<>();
+		imageList.addAll(hold);
+		imageCount.add(hold.size());
+		
+	}
+
+	private int leftSide = 0;
+	private int index = 0;
+	public boolean playNext() {
+		
+		leftSide+=imageCount.get(index++);
+		return leftSide < imageList.size();
 	}
 
 }

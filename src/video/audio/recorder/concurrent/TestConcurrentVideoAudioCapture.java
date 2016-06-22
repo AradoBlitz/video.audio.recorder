@@ -56,20 +56,7 @@ public class TestConcurrentVideoAudioCapture {
 		assertThat(imageCollector.videoFile.length()>1,Is.is(true));
 	}
 	
-	@Test
-	public void video() throws Exception {
-		
-		int index = 0;
-		while (index < 50) {
-			imageSource.collectImage();			
-			index++;
-		}
-		System.out.println("Playing...");
-		TimeUnit.SECONDS.sleep(3);		
-		while(imageSource.play()){
-			TimeUnit.MICROSECONDS.sleep(100000);
-		}
-	}
+	
 	
 	@Test
 	public void audio() throws Exception {		
@@ -87,89 +74,62 @@ public class TestConcurrentVideoAudioCapture {
 		}
 	}
 	
-	@Test
-	public void audioVideo() throws Exception {		
-		
-		boolean nextBytes = true;
-		int index = 0;
-		while (index < 10 && nextBytes) {
-			imageSource.collectImage();
-			for(int i = 0;i<20;i++)
-				nextBytes = audioRecorder.capture();			
-			index++;
-		}
-		System.out.println("Playing...");
-		TimeUnit.SECONDS.sleep(3);
-		long start = System.currentTimeMillis();
-		while(imageSource.play()){
-			for(int i = 0;i<20;i++)
-				audioRecorder.play();
-			TimeUnit.MICROSECONDS.sleep(1);
-		}
-		Date date = new Date(System.currentTimeMillis() - start);
-		DateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
-		String dateFormatted = formatter.format(date);
-		System.out.println("Movie long: " + dateFormatted);
-	}
 	
 	@Test
 	public void audioVideoInParallel() throws Exception {
 		boolean nextBytes = true;
 		int index = 0;
-		new Thread(){
+		final Thread vc = new Thread(){
 
-			@Override
-			public void run() {
-				int index = 0;
-				while (index < 10){ 
+				@Override
+				public void run() {
 					try {
-						imageSource.collectImage();
+						for(int i = 0; i<100;i++)
+							imageSource.collectImage();
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					index++;
 				}
-			}
+			};
+			vc.start();
+			vc.join();
 			
-		}.start();
-		new Thread(){
+		/*new Thread(){
 
 			@Override
 			public void run() {
 				boolean nextBytes = true;
 				int index = 0;
 				while (index < 10 && nextBytes) {
-					try {
-						imageSource.storeImage();
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					
+					imageSource.storeImage();
+					
 					for(int i = 0;i<20;i++)
 						nextBytes = audioRecorder.capture();			
 					index++;
 				}
+				vc.interrupt();
 			}
 			
 			
-		}.start();
+		}.start();*/
 		
 		System.out.println("Playing...");
 		TimeUnit.SECONDS.sleep(3);
 		long start = System.currentTimeMillis();
-		new Thread(){
+		final Thread vp = new Thread(){
 
 			@Override
-			public void run() {
-				
-				while (imageSource.play()){ 
+			public void run() {			
+					
+						imageSource.play();
 					
 				}
-			}
-			
-		}.start();
-		new Thread(){
+			};
+			vp.start();
+			vp.join();
+		/*new Thread(){
 
 			@Override
 			public void run() {
@@ -177,12 +137,13 @@ public class TestConcurrentVideoAudioCapture {
 				while(imageSource.playNext()){
 					for(int i = 0;i<20;i++)
 						audioRecorder.play();
-					TimeUnit.MICROSECONDS.sleep(1);
 				}
+				
 			}
 			
 			
-		}.start();
+		}.start();*/
+		
 		Date date = new Date(System.currentTimeMillis() - start);
 		DateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
 		String dateFormatted = formatter.format(date);
@@ -222,17 +183,5 @@ public class TestConcurrentVideoAudioCapture {
 		Thread.currentThread().sleep(1000);
 		screen.setImage(ImageIO.read(new File("/home/dmitriy/Projects/Java/video.audio.capture/video.audio.recorder/image_1.png")));
 		
-	}
-	
-	public static class Run{
-		
-		public static void main(String[] args) {
-			try {
-				new TestVideoCapture().drawToPanel();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 	}
 }
