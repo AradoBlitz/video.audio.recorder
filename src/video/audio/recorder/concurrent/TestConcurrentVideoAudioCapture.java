@@ -1,13 +1,11 @@
-package video.audio.recorder;
+package video.audio.recorder.concurrent;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,9 +14,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
 
 import org.hamcrest.core.Is;
 import org.hamcrest.core.IsEqual;
@@ -27,12 +22,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.sarxos.webcam.Webcam;
-import com.github.sarxos.webcam.WebcamEvent;
-import com.github.sarxos.webcam.WebcamListener;
 import com.github.sarxos.webcam.WebcamResolution;
 
-public class TestVideoCapture {
+import video.audio.recorder.concurrent.AudioRecorder;
+import video.audio.recorder.concurrent.ImageCollector;
+import video.audio.recorder.concurrent.ImageSource;
+import video.audio.recorder.concurrent.ImageSourceWebcam;
 
+
+public class TestConcurrentVideoAudioCapture {
 	public static final List<BufferedImage> IMAGE_LIST = new ArrayList<>();
 	ImageCollector imageCollector = new ImageCollector();
 	ImageSource screen = new ImageSource();
@@ -112,6 +110,84 @@ public class TestVideoCapture {
 		DateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
 		String dateFormatted = formatter.format(date);
 		System.out.println("Movie long: " + dateFormatted);
+	}
+	
+	@Test
+	public void audioVideoInParallel() throws Exception {
+		boolean nextBytes = true;
+		int index = 0;
+		new Thread(){
+
+			@Override
+			public void run() {
+				int index = 0;
+				while (index < 10){ 
+					try {
+						imageSource.collectImage();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					index++;
+				}
+			}
+			
+		}.start();
+		new Thread(){
+
+			@Override
+			public void run() {
+				boolean nextBytes = true;
+				int index = 0;
+				while (index < 10 && nextBytes) {
+					try {
+						imageSource.storeImage();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					for(int i = 0;i<20;i++)
+						nextBytes = audioRecorder.capture();			
+					index++;
+				}
+			}
+			
+			
+		}.start();
+		
+		System.out.println("Playing...");
+		TimeUnit.SECONDS.sleep(3);
+		long start = System.currentTimeMillis();
+		new Thread(){
+
+			@Override
+			public void run() {
+				
+				while (imageSource.play()){ 
+					
+				}
+			}
+			
+		}.start();
+		new Thread(){
+
+			@Override
+			public void run() {
+				
+				while(imageSource.playNext()){
+					for(int i = 0;i<20;i++)
+						audioRecorder.play();
+					TimeUnit.MICROSECONDS.sleep(1);
+				}
+			}
+			
+			
+		}.start();
+		Date date = new Date(System.currentTimeMillis() - start);
+		DateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
+		String dateFormatted = formatter.format(date);
+		System.out.println("Movie long: " + dateFormatted);
+		TimeUnit.MINUTES.sleep(1);
 	}
 	
 	@Test
