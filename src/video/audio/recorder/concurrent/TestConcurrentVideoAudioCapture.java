@@ -1,6 +1,6 @@
 package video.audio.recorder.concurrent;
 
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import java.awt.Dimension;
 import java.awt.Image;
@@ -94,7 +94,10 @@ public class TestConcurrentVideoAudioCapture {
 			};
 			vc.start();
 			vc.join();
-			
+			System.out.println(imageSource.imageList.size() + "");
+			assertTrue(imageSource.imageList.size()>10);
+			imageSource.storeImage();
+			assertEquals(imageSource.playList.size()+"", imageSource.imageList.size(),imageSource.playList.size());
 		/*new Thread(){
 
 			@Override

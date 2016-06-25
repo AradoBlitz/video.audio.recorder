@@ -20,7 +20,7 @@ public class ImageSourceWebcam {
 	private ImageSource screen;
 	
 	Webcam webcam = Webcam.getDefault();
-	private List<BufferedImage> imageList = new ArrayList<>();
+	public List<BufferedImage> imageList = new ArrayList<>();
 	private volatile List<BufferedImage> imageBuffer = new ArrayList<>();
 	private List<Integer>  imageCount = new ArrayList<>();
 	
